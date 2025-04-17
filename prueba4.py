@@ -13,6 +13,8 @@ from sklearn.linear_model import Ridge, LinearRegression
 from math import sqrt, log
 from sklearn.metrics import mean_absolute_error
 from xgboost import XGBRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
 
 # Cargar datos
 df = pd.read_csv("laptop_data.csv", index_col=0)
@@ -224,7 +226,11 @@ rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 print("R2 Score:", r2)
 print("MAE Score:", mae)
 print("RMSE Score:", rmse)
+from sklearn.metrics import mean_squared_log_error
 
+msle = mean_squared_log_error(np.exp(y_test), np.exp(y_pred))
+print("MSLE:", msle)
+print(df.sample(10))
 # import pandas as pd
 # import numpy as np
 
@@ -315,4 +321,92 @@ print("RMSE Score:", rmse)
 
 # # Mostrar mejores hiperparámetros
 # print("\nMejores hiperparámetros:", grid.best_params_)
- 
+
+
+
+###Otra forma de preprocesamiento
+# label_encoder = LabelEncoder()
+# for col in df.select_dtypes(include = ["object"]).columns:
+#     df[col] = label_encoder.fit_transform(df[col])
+# print(df.corr()['Price'])
+# X = df.drop("Price", axis = 1)
+# y = np.log(df["Price"] + 1e-8)
+     
+
+# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+     
+
+# Scaling_Features = StandardScaler()
+# X_train = Scaling_Features.fit_transform(X_train)
+# X_test = Scaling_Features.transform(X_test)
+     
+
+# linear_regression = LinearRegression(n_jobs = -1)
+
+# ridge = Ridge(max_iter = 500, alpha = 0.001, solver = "auto")
+
+# decision_tree = DecisionTreeRegressor(max_depth = 5 ,random_state = 42,min_samples_split= 10, min_samples_leaf= 3)
+
+# random_forest = RandomForestRegressor(max_depth = 5 ,n_estimators = 100, random_state = 42,min_samples_split= 10,
+#                                       min_samples_leaf= 3)
+# svr = SVR(kernel = "linear")
+
+# xgb = XGBRegressor(max_depth = 5 ,n_estimators = 100, random_state = 42,min_samples_split= 10, min_samples_leaf= 3)
+     
+
+# linear_regression = LinearRegression(n_jobs = -1)
+# ridge = Ridge(max_iter = 500, alpha = 0.001, solver = "auto")
+# decision_tree = DecisionTreeRegressor()
+# random_forest = RandomForestRegressor()
+# svr = SVR()
+# xgb = XGBRegressor()
+     
+
+# param_grid = [
+#     {
+#     "estimator" : [linear_regression],
+#     },
+#     {
+#         "estimator" : [ridge],
+#     },
+#     {
+#         "estimator" : [decision_tree],
+#         "estimator__max_depth" : np.array([5, 10, 15, 20]),
+#         "estimator__min_samples_split" : np.array([2, 5, 10, 20]),
+#         "estimator__min_samples_leaf" : np.array([1, 2, 5, 10]),
+#     },
+#     {
+#         "estimator" : [random_forest],
+#         "estimator__max_depth" : np.array([5, 10, 15, 20]),
+#         "estimator__n_estimators" : np.array([100,150 ,200, 250]),
+#         "estimator__min_samples_split" : np.array([2, 5, 10, 20]),
+#         "estimator__min_samples_leaf" : np.array([1, 2, 5, 10]),
+#     },
+#     {
+#         "estimator" : [svr],
+#         "estimator__kernel" : ["linear", "poly", "rbf"],
+#         "estimator__C" : np.array([0.001, 0.01, 0.1]),
+#         "estimator__gamma" : np.array(["scale", "auto"]),
+#     },
+#     {
+#         "estimator" : [xgb],
+#         "estimator__max_depth" : np.array([5, 10, 15, 20]),
+#         "estimator__n_estimators" : np.array([100,150 ,200, 250]),
+#     },
+# ]
+     
+
+# pipeline = Pipeline([("estimator" , linear_regression)])
+# grid_search = GridSearchCV(estimator = pipeline, param_grid = param_grid, cv = 10, n_jobs = -1)
+# grid_search.fit(X_train, y_train)
+# grid_search.best_score_
+
+# best_model = grid_search.best_estimator_
+     
+
+# y_pred = best_model.predict(X_test)
+# y_pred
+# mse = mean_squared_error(y_test, y_pred)
+# print("Mean Squared Error:", mse)
+# rmse = np.sqrt(mse)
+# print("Root Mean Squared Error:", rmse)
