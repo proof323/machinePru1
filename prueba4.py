@@ -130,6 +130,7 @@ df.drop(columns=['Cpu','Cpu Name','OpSys','Memory'],inplace=True)
 #Gpu brand
 df['Gpu brand'] = df['Gpu'].apply(lambda x:x.split()[0])
 df.drop(columns=['Gpu'],inplace=True)
+df.drop(columns=['Inches','x_res','y_res'],inplace=True)
 print(df.sample(10)) 
 # print(df["Gpu brand"].unique())
 # print(df[df["Cpu Name"] == 'Samsung Cortex A72&A53'])
@@ -140,9 +141,12 @@ y = np.log(df['Price'])
 from sklearn.model_selection import train_test_split as tts
 x_train, x_test, y_train, y_test = tts(x, y, test_size=0.15, random_state=6227)
 
+categorical_features = ['Company', 'TypeName', 'os', 'Cpu brand', 'Gpu brand']
+
 step1 = ColumnTransformer(transformers=[
-    ('col_tnf', OneHotEncoder(sparse_output=False, drop='first'), [0, 1, 12, 13, 14])  # Ajustado a columnas válidas
+    ('cat', OneHotEncoder(drop='first', sparse_output=False), categorical_features)
 ], remainder='passthrough')
+
 
 step2 = RandomForestRegressor(
     n_estimators=200,
@@ -172,8 +176,8 @@ print("RMSE Score:", rmse)
 #Ridge Regresssion
 print("Ridge Regresssion")
 step1 = ColumnTransformer(transformers=[
-    ('col_tnf',OneHotEncoder(sparse_output=False,drop='first'),[0, 1, 12, 13, 14])
-],remainder='passthrough')
+    ('cat', OneHotEncoder(drop='first', sparse_output=False), categorical_features)
+], remainder='passthrough')
 
 step2 = Ridge(alpha=10)
 pipe = Pipeline([
@@ -189,8 +193,8 @@ rmse = np.sqrt(mean_squared_error(y_test, y_pred))
 print("RMSE Score:", rmse)
 print("linear regresion")
 step1 = ColumnTransformer(transformers=[
-    ('col_tnf',OneHotEncoder(sparse_output=False,drop='first'),[0, 1, 12, 13, 14])
-],remainder='passthrough')
+    ('cat', OneHotEncoder(drop='first', sparse_output=False), categorical_features)
+], remainder='passthrough')
 
 step2 = LinearRegression()
 pipe = Pipeline([
@@ -210,8 +214,8 @@ print("RMSE Score:", rmse)
 print("linear regresion")
 print("xgboost")
 step1 = ColumnTransformer(transformers=[
-    ('col_tnf',OneHotEncoder(sparse_output=False,drop='first'),[0, 1, 12, 13, 14])
-],remainder='passthrough')
+    ('cat', OneHotEncoder(drop='first', sparse_output=False), categorical_features)
+], remainder='passthrough')
 
 step2 = XGBRegressor(max_depth=5,learning_rate=0.5)
 pipe = Pipeline([
